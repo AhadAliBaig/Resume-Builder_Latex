@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume Tailor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d0d0f;
+      --surface:  #141417;
+      --border:   #232328;
+      --border-hi:#3a3a42;
+      --text:     #e8e8ec;
+      --muted:    #6b6b78;
+      --accent:   #c8f04d;
+      --accent-dim:#8aaa2b;
+      --danger:   #f04d4d;
+      --mono:     'DM Mono', monospace;
+      --sans:     'Syne', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.5;
+      overflow: hidden;
+    }
+
+    .app {
+      display: grid;
+      grid-template-rows: 52px 1fr;
+      height: 100vh;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 26px;
+      height: 26px;
+      background: var(--accent);
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+    }
+
+    .logo-mark svg { width: 14px; height: 14px; }
+
+    .logo-text {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .model-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
+    }
+
+    .model-select-wrap label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    select {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    select option { background: var(--surface); }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s;
+    }
+    .status-dot.ok   { background: var(--accent); }
+    .status-dot.err  { background: var(--danger); }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-right: 1px solid var(--border);
+    }
+
+    .panel:last-child { border-right: none; }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .panel-title {
+      font-size: 10px;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .input-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .input-section {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      flex: 1;
+    }
+
+    .input-section:last-child { border-bottom: none; }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 18px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .section-label-text {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .char-count {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--border-hi);
+    }
+
+    textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: none;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.7;
+      padding: 14px 18px;
+      width: 100%;
+    }
+
+    textarea::placeholder {
+      color: var(--border-hi);
+    }
+
+    .skills-section { flex: 0 0 120px; }
+
+    .generate-bar {
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .btn-generate {
+      width: 100%;
+      padding: 11px 0;
+      background: var(--accent);
+      color: #0d0d0f;
+      border: none;
+      border-radius: 6px;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s, opacity 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-generate:hover { background: #d4f75a; }
+    .btn-generate:active { background: var(--accent-dim); }
+    .btn-generate:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-generate .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(0,0,0,0.25);
+      border-top-color: #0d0d0f;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .btn-generate.loading .spinner { display: block; }
+    .btn-generate.loading .btn-label { opacity: 0.6; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .output-panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .output-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.8;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+      position: relative;
+    }
+
+    .output-body::-webkit-scrollbar { width: 4px; }
+    .output-body::-webkit-scrollbar-track { background: transparent; }
+    .output-body::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
+
+    .placeholder-msg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+      font-family: var(--sans);
+    }
+
+    .placeholder-msg svg {
+      opacity: 0.2;
+    }
+
+    .placeholder-msg p {
+      font-size: 13px;
+      text-align: center;
+      max-width: 220px;
+      line-height: 1.6;
+    }
+
+    .output-footer {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .token-counter {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .output-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn:hover {
+      border-color: var(--border-hi);
+      color: var(--text);
+    }
+
+    .btn.btn-accent {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn.btn-accent:hover {
+      background: var(--accent);
+      color: #0d0d0f;
+    }
+
+    .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .modified-line {
+      background: rgba(200, 240, 77, 0.06);
+      border-left: 2px solid var(--accent);
+      padding-left: 6px;
+      margin-left: -8px;
+      display: block;
+    }
+
+    .diff-add {
+      background: rgba(200, 240, 77, 0.08);
+      border-left: 2px solid var(--accent);
+      padding-left: 6px;
+      margin-left: -8px;
+      display: block;
+    }
+
+    .diff-remove {
+      background: rgba(240, 77, 77, 0.08);
+      border-left: 2px solid var(--danger);
+      padding-left: 6px;
+      margin-left: -8px;
+      display: block;
+      opacity: 0.7;
+      text-decoration: line-through;
+    }
+
+    .diff-same {
+      display: block;
+      color: var(--muted);
+    }
+
+    .diff-summary {
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      gap: 16px;
+    }
+
+    .diff-summary .stat-add { color: var(--accent); }
+    .diff-summary .stat-remove { color: var(--danger); }
+    .diff-summary .stat-same { color: var(--muted); }
+
+    .btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border-hi);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .error-msg {
+      color: var(--danger);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 14px;
+      background: rgba(240,77,77,0.06);
+      border: 1px solid rgba(240,77,77,0.2);
+      border-radius: 6px;
+      margin: 18px;
+    }
+
+    textarea::-webkit-scrollbar { width: 4px; }
+    textarea::-webkit-scrollbar-track { background: transparent; }
+    textarea::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none">
+          <rect x="1" y="1" width="5" height="5" fill="#0d0d0f"/>
+          <rect x="8" y="1" width="5" height="5" fill="#0d0d0f"/>
+          <rect x="1" y="8" width="5" height="5" fill="#0d0d0f"/>
+          <rect x="8" y="8" width="5" height="2" fill="#0d0d0f"/>
+        </svg>
+      </div>
+      <span class="logo-text">resume<span>tailor</span></span>
+    </div>
+    <div class="header-right">
+      <div class="model-select-wrap">
+        <label>model</label>
+        <select id="modelSelect">
+          <option value="{{ default_model }}">{{ default_model }}</option>
+        </select>
+      </div>
+      <div class="status-dot" id="statusDot" title="Ollama connection status"></div>
+    </div>
+  </header>
+
+  <div class="workspace">
+
+    <div class="panel input-panel">
+
+      <div class="input-section" style="flex: 2.5;">
+        <div class="section-label">
+          <span class="section-label-text">LaTeX Resume</span>
+          <span class="char-count" id="resumeCount">0 chars</span>
+        </div>
+        <textarea id="latexResume" placeholder="Paste your full .tex resume here..." spellcheck="false"></textarea>
+      </div>
+
+      <div class="input-section" style="flex: 2;">
+        <div class="section-label">
+          <span class="section-label-text">Job Description</span>
+          <span class="char-count" id="jobCount">0 chars</span>
+        </div>
+        <textarea id="jobDescription" placeholder="Paste the job posting here..." spellcheck="false"></textarea>
+      </div>
+
+      <div class="input-section skills-section">
+        <div class="section-label">
+          <span class="section-label-text">Skills to Add</span>
+          <span class="char-count" id="skillsCount">0 chars</span>
+        </div>
+        <textarea id="skills" placeholder="e.g. Kubernetes, Terraform, Go, CI/CD pipelines..." spellcheck="false"></textarea>
+      </div>
+
+      <div class="generate-bar">
+        <button class="btn-generate" id="generateBtn" onclick="generate()">
+          <div class="spinner"></div>
+          <span class="btn-label">Generate Tailored Resume</span>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="panel output-panel">
+      <div class="panel-header">
+        <span class="panel-title">Output — Tailored .tex</span>
+        <div class="panel-actions">
+          <button class="btn" id="diffBtn" onclick="toggleDiff()" disabled>diff</button>
+          <button class="btn" id="clearBtn" onclick="clearOutput()" disabled>clear</button>
+          <button class="btn" id="copyBtn" onclick="copyOutput()" disabled>copy</button>
+          <button class="btn btn-accent" id="downloadBtn" onclick="downloadOutput()" disabled>&#8595; download .tex</button>
+        </div>
+      </div>
+
+      <div class="output-body" id="outputBody">
+        <div class="placeholder-msg" id="placeholderMsg">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect x="8" y="6" width="32" height="36" rx="3" stroke="#6b6b78" stroke-width="1.5"/>
+            <line x1="14" y1="14" x2="34" y2="14" stroke="#6b6b78" stroke-width="1.5"/>
+            <line x1="14" y1="20" x2="34" y2="20" stroke="#6b6b78" stroke-width="1.5"/>
+            <line x1="14" y1="26" x2="26" y2="26" stroke="#6b6b78" stroke-width="1.5"/>
+            <circle cx="36" cy="36" r="8" fill="#0d0d0f" stroke="#6b6b78" stroke-width="1.5"/>
+            <line x1="36" y1="32" x2="36" y2="40" stroke="#6b6b78" stroke-width="1.5"/>
+            <line x1="32" y1="36" x2="40" y2="36" stroke="#6b6b78" stroke-width="1.5"/>
+          </svg>
+          <p>Paste your resume and job description, then hit Generate</p>
+        </div>
+      </div>
+
+      <div class="output-footer">
+        <span class="token-counter" id="tokenCounter">&mdash;</span>
+        <div class="output-btns"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let fullOutput = "";
+  let preamble = "";
+  let originalBody = "";
+  let generating = false;
+  let abortController = null;
+  let showingDiff = false;
+
+  function bindCounter(id, counterId) {
+    const el = document.getElementById(id);
+    const counter = document.getElementById(counterId);
+    el.addEventListener("input", () => {
+      counter.textContent = el.value.length.toLocaleString() + " chars";
+    });
+  }
+  bindCounter("latexResume", "resumeCount");
+  bindCounter("jobDescription", "jobCount");
+  bindCounter("skills", "skillsCount");
+
+  async function checkOllama() {
+    const dot = document.getElementById("statusDot");
+    const sel = document.getElementById("modelSelect");
+    try {
+      const res = await fetch("/models");
+      const data = await res.json();
+      if (data.status === "ok" && data.models.length > 0) {
+        dot.className = "status-dot ok";
+        const current = sel.value;
+        sel.innerHTML = data.models
+          .map(m => `<option value="${m}" ${m === current ? "selected" : ""}>${m}</option>`)
+          .join("");
+      } else {
+        dot.className = "status-dot err";
+      }
+    } catch {
+      dot.className = "status-dot err";
+    }
+  }
+  checkOllama();
+
+  function renderOutput(text) {
+    const body = document.getElementById("outputBody");
+    const lines = text.split("\n");
+    const html = lines.map(line => {
+      if (line.includes("% MODIFIED")) {
+        return `<span class="modified-line">${escHtml(line)}</span>`;
+      }
+      return escHtml(line);
+    }).join("\n");
+    body.innerHTML = html;
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function escHtml(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  async function generate() {
+    if (generating) { abort(); return; }
+
+    const latex = document.getElementById("latexResume").value.trim();
+    const job   = document.getElementById("jobDescription").value.trim();
+    const skills = document.getElementById("skills").value.trim();
+    const model  = document.getElementById("modelSelect").value;
+
+    if (!latex || !job) {
+      showToast("Paste your resume and job description first");
+      return;
+    }
+
+    generating = true;
+    fullOutput = "";
+    preamble = "";
+    showingDiff = false;
+    document.getElementById("diffBtn").classList.remove("active");
+    abortController = new AbortController();
+
+    const beginMarker = "\\begin{document}";
+    const endMarker = "\\end{document}";
+    let bodyStart = latex.indexOf(beginMarker);
+    if (bodyStart !== -1) {
+      originalBody = latex.substring(bodyStart + beginMarker.length);
+      let bodyEnd = originalBody.lastIndexOf(endMarker);
+      if (bodyEnd !== -1) originalBody = originalBody.substring(0, bodyEnd);
+    } else {
+      originalBody = latex;
+    }
+
+    const btn = document.getElementById("generateBtn");
+    btn.classList.add("loading");
+    btn.querySelector(".btn-label").textContent = "Generating... (click to stop)";
+    btn.disabled = false;
+
+    const placeholder = document.getElementById("placeholderMsg");
+    if (placeholder) placeholder.remove();
+    document.getElementById("outputBody").textContent = "";
+    document.getElementById("copyBtn").disabled = true;
+    document.getElementById("downloadBtn").disabled = true;
+    document.getElementById("clearBtn").disabled = true;
+    document.getElementById("tokenCounter").textContent = "streaming...";
+
+    let charCount = 0;
+
+    try {
+      const res = await fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ latex_resume: latex, job_description: job, skills, model }),
+        signal: abortController.signal,
+      });
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop();
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const payload = JSON.parse(line.slice(6));
+
+          if (payload.preamble !== undefined) {
+            preamble = payload.preamble;
+            renderOutput(getFullTex());
+            continue;
+          }
+
+          if (payload.error) {
+            showError(payload.error);
+            break;
+          }
+
+          if (payload.token) {
+            fullOutput += payload.token;
+            charCount += payload.token.length;
+            renderOutput(getFullTex());
+            document.getElementById("tokenCounter").textContent = charCount.toLocaleString() + " chars";
+          }
+
+          if (payload.done) break;
+        }
+      }
+    } catch (e) {
+      if (e.name !== "AbortError") showError(e.message);
+    }
+
+    generating = false;
+    btn.classList.remove("loading");
+    btn.querySelector(".btn-label").textContent = "Generate Tailored Resume";
+
+    if (fullOutput.trim()) {
+      document.getElementById("copyBtn").disabled = false;
+      document.getElementById("downloadBtn").disabled = false;
+      document.getElementById("clearBtn").disabled = false;
+      document.getElementById("diffBtn").disabled = false;
+      showToast("Resume generated");
+    }
+  }
+
+  function abort() {
+    abortController?.abort();
+    generating = false;
+    const btn = document.getElementById("generateBtn");
+    btn.classList.remove("loading");
+    btn.querySelector(".btn-label").textContent = "Generate Tailored Resume";
+    showToast("Stopped");
+  }
+
+  function getFullTex() {
+    if (!preamble) return fullOutput;
+    return preamble + "\n" + fullOutput.trim() + "\n\\end{document}\n";
+  }
+
+  function copyOutput() {
+    navigator.clipboard.writeText(getFullTex()).then(() => showToast("Copied to clipboard"));
+  }
+
+  function downloadOutput() {
+    const blob = new Blob([getFullTex()], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "resume_tailored.tex";
+    a.click();
+    showToast("Downloaded resume_tailored.tex");
+  }
+
+  function clearOutput() {
+    fullOutput = "";
+    const body = document.getElementById("outputBody");
+    body.innerHTML = `
+      <div class="placeholder-msg" id="placeholderMsg">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect x="8" y="6" width="32" height="36" rx="3" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="14" y1="14" x2="34" y2="14" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="14" y1="20" x2="34" y2="20" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="14" y1="26" x2="26" y2="26" stroke="#6b6b78" stroke-width="1.5"/>
+          <circle cx="36" cy="36" r="8" fill="#0d0d0f" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="36" y1="32" x2="36" y2="40" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="32" y1="36" x2="40" y2="36" stroke="#6b6b78" stroke-width="1.5"/>
+        </svg>
+        <p>Paste your resume and job description, then hit Generate</p>
+      </div>`;
+    document.getElementById("copyBtn").disabled = true;
+    document.getElementById("downloadBtn").disabled = true;
+    document.getElementById("clearBtn").disabled = true;
+    document.getElementById("diffBtn").disabled = true;
+    document.getElementById("diffBtn").classList.remove("active");
+    showingDiff = false;
+    document.getElementById("tokenCounter").textContent = "\u2014";
+  }
+
+  function computeDiff(oldText, newText) {
+    const oldLines = oldText.split("\n").filter(l => l.trim() !== "");
+    const newLines = newText.split("\n").filter(l => l.trim() !== "");
+    const m = oldLines.length, n = newLines.length;
+
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (oldLines[i - 1].trim() === newLines[j - 1].trim()) {
+          dp[i][j] = dp[i - 1][j - 1] + 1;
+        } else {
+          dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        }
+      }
+    }
+
+    const result = [];
+    let i = m, j = n;
+    while (i > 0 || j > 0) {
+      if (i > 0 && j > 0 && oldLines[i - 1].trim() === newLines[j - 1].trim()) {
+        result.unshift({ type: "same", text: oldLines[i - 1] });
+        i--; j--;
+      } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+        result.unshift({ type: "add", text: newLines[j - 1] });
+        j--;
+      } else {
+        result.unshift({ type: "remove", text: oldLines[i - 1] });
+        i--;
+      }
+    }
+    return result;
+  }
+
+  function renderDiff() {
+    const diff = computeDiff(originalBody, fullOutput);
+    const body = document.getElementById("outputBody");
+
+    let added = 0, removed = 0, same = 0;
+    diff.forEach(d => { if (d.type === "add") added++; else if (d.type === "remove") removed++; else same++; });
+
+    let html = `<div class="diff-summary">`;
+    html += `<span class="stat-add">+${added} added</span>`;
+    html += `<span class="stat-remove">-${removed} removed</span>`;
+    html += `<span class="stat-same">${same} unchanged</span>`;
+    html += `</div>`;
+
+    html += diff.map(d => {
+      const cls = d.type === "add" ? "diff-add" : d.type === "remove" ? "diff-remove" : "diff-same";
+      const prefix = d.type === "add" ? "+ " : d.type === "remove" ? "- " : "  ";
+      return `<span class="${cls}">${escHtml(prefix + d.text)}</span>`;
+    }).join("\n");
+
+    body.innerHTML = html;
+    body.scrollTop = 0;
+  }
+
+  function toggleDiff() {
+    showingDiff = !showingDiff;
+    const btn = document.getElementById("diffBtn");
+    if (showingDiff) {
+      btn.classList.add("active");
+      renderDiff();
+    } else {
+      btn.classList.remove("active");
+      renderOutput(getFullTex());
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2500);
+  }
+
+  function showError(msg) {
+    const body = document.getElementById("outputBody");
+    body.innerHTML = `<div class="error-msg">${escHtml(msg)}</div>`;
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") generate();
+  });
+</script>
+</body>
+</html>
