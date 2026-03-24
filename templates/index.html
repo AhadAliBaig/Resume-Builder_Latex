@@ -425,6 +425,240 @@
       color: var(--accent);
     }
 
+    /* ── KEYWORD CHIPS ──────────────────────────────────── */
+    .keywords-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-content: flex-start;
+    }
+
+    .keywords-area::-webkit-scrollbar { width: 4px; }
+    .keywords-area::-webkit-scrollbar-track { background: transparent; }
+    .keywords-area::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
+
+    .kw-chip {
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .kw-chip.present {
+      border-color: rgba(200, 240, 77, 0.3);
+      background: rgba(200, 240, 77, 0.08);
+      color: var(--accent);
+    }
+
+    .kw-chip.missing {
+      border-color: rgba(240, 180, 40, 0.4);
+      background: rgba(240, 180, 40, 0.1);
+      color: #f0b428;
+    }
+
+    .kw-chip.missing.selected {
+      border-color: #f0b428;
+      background: rgba(240, 180, 40, 0.2);
+    }
+
+    .kw-chip.deselected {
+      border-color: var(--border);
+      background: transparent;
+      color: var(--muted);
+      opacity: 0.5;
+    }
+
+    .kw-placeholder {
+      color: var(--border-hi);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 0;
+    }
+
+    /* ── ATS SCORE BAR ──────────────────────────────────── */
+    .ats-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 18px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .ats-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .ats-track {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .ats-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+
+    .ats-pct {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent);
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* ── EXTRACT BUTTON ─────────────────────────────────── */
+    .btn-extract {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 10px;
+      cursor: pointer;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      transition: all 0.15s;
+    }
+
+    .btn-extract:hover {
+      background: var(--accent);
+      color: #0d0d0f;
+    }
+
+    .btn-extract:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .btn-extract .mini-spin {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border: 1.5px solid rgba(200,240,77,0.3);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    /* ── TEMPLATE CONTROLS ──────────────────────────────── */
+    .template-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .template-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      max-width: 120px;
+    }
+
+    .template-select option { background: var(--surface); }
+
+    .btn-tmpl {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 9px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+
+    .btn-tmpl:hover {
+      border-color: var(--border-hi);
+      color: var(--text);
+    }
+
+    /* ── OUTPUT TABS ────────────────────────────────────── */
+    .output-tabs {
+      display: flex;
+      gap: 0;
+      flex-shrink: 0;
+    }
+
+    .output-tab {
+      padding: 5px 14px;
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+
+    .output-tab:first-child { border-radius: 5px 0 0 5px; }
+    .output-tab:last-child { border-radius: 0 5px 5px 0; border-left: none; }
+
+    .output-tab.active {
+      background: var(--accent);
+      color: #0d0d0f;
+      border-color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── GENERATE BAR SPLIT ─────────────────────────────── */
+    .generate-bar-split {
+      display: flex;
+      gap: 8px;
+    }
+
+    .generate-bar-split .btn-generate {
+      flex: 1;
+    }
+
+    .btn-generate.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-generate.secondary:hover {
+      background: rgba(200, 240, 77, 0.1);
+    }
+
+    .btn-generate.secondary:disabled {
+      opacity: 0.35;
+    }
+
+    .btn-generate.secondary .spinner {
+      border-color: rgba(200,240,77,0.25);
+      border-top-color: var(--accent);
+    }
+
     .toast {
       position: fixed;
       bottom: 24px;
@@ -497,7 +731,16 @@
       <div class="input-section" style="flex: 2.5;">
         <div class="section-label">
           <span class="section-label-text">LaTeX Resume</span>
-          <span class="char-count" id="resumeCount">0 chars</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="template-controls">
+              <select class="template-select" id="templateSelect" onchange="loadTemplate()">
+                <option value="">— templates —</option>
+              </select>
+              <button class="btn-tmpl" onclick="saveTemplate()">save</button>
+              <button class="btn-tmpl" onclick="deleteTemplate()">del</button>
+            </div>
+            <span class="char-count" id="resumeCount">0 chars</span>
+          </div>
         </div>
         <textarea id="latexResume" placeholder="Paste your full .tex resume here..." spellcheck="false"></textarea>
       </div>
@@ -510,31 +753,47 @@
         <textarea id="jobDescription" placeholder="Paste the job posting here..." spellcheck="false"></textarea>
       </div>
 
-      <div class="input-section skills-section">
+      <div class="input-section" style="flex: 0 0 auto; min-height: 100px; max-height: 200px;">
         <div class="section-label">
-          <span class="section-label-text">Skills to Add</span>
-          <span class="char-count" id="skillsCount">0 chars</span>
+          <span class="section-label-text">ATS Keywords</span>
+          <button class="btn-extract" id="extractBtn" onclick="extractKeywords()">extract from JD</button>
         </div>
-        <textarea id="skills" placeholder="e.g. Kubernetes, Terraform, Go, CI/CD pipelines..." spellcheck="false"></textarea>
+        <div class="ats-bar" id="atsBar" style="display:none;">
+          <span class="ats-label">ATS match</span>
+          <div class="ats-track"><div class="ats-fill" id="atsFill" style="width:0%"></div></div>
+          <span class="ats-pct" id="atsPct">0%</span>
+        </div>
+        <div class="keywords-area" id="keywordsArea">
+          <span class="kw-placeholder">Paste a job description above, then click "extract from JD"</span>
+        </div>
       </div>
 
       <div class="generate-bar">
-        <button class="btn-generate" id="generateBtn" onclick="generate()">
-          <div class="spinner"></div>
-          <span class="btn-label">Generate Tailored Resume</span>
-        </button>
+        <div class="generate-bar-split">
+          <button class="btn-generate" id="generateBtn" onclick="generate()">
+            <div class="spinner"></div>
+            <span class="btn-label">Generate Resume</span>
+          </button>
+          <button class="btn-generate secondary" id="generateCLBtn" onclick="generateCoverLetter()">
+            <div class="spinner"></div>
+            <span class="btn-label">Generate Cover Letter</span>
+          </button>
+        </div>
       </div>
 
     </div>
 
     <div class="panel output-panel">
       <div class="panel-header">
-        <span class="panel-title">Output — Tailored .tex</span>
+        <div class="output-tabs">
+          <button class="output-tab active" id="tabResume" onclick="switchTab('resume')">Resume</button>
+          <button class="output-tab" id="tabCoverLetter" onclick="switchTab('coverLetter')">Cover Letter</button>
+        </div>
         <div class="panel-actions">
           <button class="btn" id="diffBtn" onclick="toggleDiff()" disabled>diff</button>
           <button class="btn" id="clearBtn" onclick="clearOutput()" disabled>clear</button>
           <button class="btn" id="copyBtn" onclick="copyOutput()" disabled>copy</button>
-          <button class="btn btn-accent" id="downloadBtn" onclick="downloadOutput()" disabled>&#8595; download .tex</button>
+          <button class="btn btn-accent" id="downloadBtn" onclick="downloadOutput()" disabled>&#8595; download</button>
         </div>
       </div>
 
@@ -568,9 +827,12 @@
   let fullOutput = "";
   let preamble = "";
   let originalBody = "";
+  let coverLetterOutput = "";
+  let activeTab = "resume";
   let generating = false;
   let abortController = null;
   let showingDiff = false;
+  let extractedKeywords = [];
 
   function bindCounter(id, counterId) {
     const el = document.getElementById(id);
@@ -581,7 +843,6 @@
   }
   bindCounter("latexResume", "resumeCount");
   bindCounter("jobDescription", "jobCount");
-  bindCounter("skills", "skillsCount");
 
   async function checkOllama() {
     const dot = document.getElementById("statusDot");
@@ -603,6 +864,139 @@
     }
   }
   checkOllama();
+
+  // ── KEYWORD EXTRACTION ─────────────────────────────────
+  async function extractKeywords() {
+    const jd = document.getElementById("jobDescription").value.trim();
+    const resume = document.getElementById("latexResume").value.trim();
+    const model = document.getElementById("modelSelect").value;
+
+    if (!jd) { showToast("Paste a job description first"); return; }
+
+    const btn = document.getElementById("extractBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="mini-spin"></span>extracting...';
+
+    try {
+      const res = await fetch("/extract-keywords", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ job_description: jd, resume_text: resume, model }),
+      });
+      const data = await res.json();
+
+      if (data.error) { showToast("Extraction failed: " + data.error); return; }
+
+      extractedKeywords = data.keywords.map(k => ({
+        ...k,
+        selected: !k.present,
+      }));
+
+      renderKeywordChips();
+      updateAtsScore(data.match_score);
+    } catch (e) {
+      showToast("Extraction failed: " + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = "extract from JD";
+    }
+  }
+
+  function renderKeywordChips() {
+    const area = document.getElementById("keywordsArea");
+    if (extractedKeywords.length === 0) {
+      area.innerHTML = '<span class="kw-placeholder">Paste a job description above, then click "extract from JD"</span>';
+      return;
+    }
+
+    area.innerHTML = extractedKeywords.map((kw, i) => {
+      let cls = "kw-chip ";
+      if (kw.present) {
+        cls += "present";
+      } else if (kw.selected) {
+        cls += "missing selected";
+      } else {
+        cls += "missing deselected";
+      }
+      return `<span class="${cls}" onclick="toggleKeyword(${i})" title="${kw.present ? 'Already in resume' : 'Click to toggle'}">${escHtml(kw.keyword)}</span>`;
+    }).join("");
+  }
+
+  function toggleKeyword(index) {
+    const kw = extractedKeywords[index];
+    if (kw.present) return;
+    kw.selected = !kw.selected;
+    renderKeywordChips();
+  }
+
+  function getSelectedSkills() {
+    return extractedKeywords
+      .filter(k => k.selected && !k.present)
+      .map(k => k.keyword)
+      .join(", ");
+  }
+
+  function updateAtsScore(score) {
+    const bar = document.getElementById("atsBar");
+    bar.style.display = "flex";
+    document.getElementById("atsFill").style.width = score + "%";
+    document.getElementById("atsPct").textContent = score + "%";
+  }
+
+  // ── TEMPLATE SYSTEM ──────────────────────────────────────
+  const TEMPLATES_KEY = "resumeTailorTemplates";
+
+  function getTemplates() {
+    try { return JSON.parse(localStorage.getItem(TEMPLATES_KEY) || "{}"); }
+    catch { return {}; }
+  }
+
+  function refreshTemplateList() {
+    const sel = document.getElementById("templateSelect");
+    const templates = getTemplates();
+    const names = Object.keys(templates).sort();
+    sel.innerHTML = '<option value="">— templates —</option>' +
+      names.map(n => `<option value="${escHtml(n)}">${escHtml(n)}</option>`).join("");
+  }
+
+  function saveTemplate() {
+    const content = document.getElementById("latexResume").value.trim();
+    if (!content) { showToast("Nothing to save"); return; }
+    const name = prompt("Template name (e.g. SWE, Data Analyst):");
+    if (!name || !name.trim()) return;
+    const templates = getTemplates();
+    templates[name.trim()] = content;
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
+    refreshTemplateList();
+    showToast("Saved: " + name.trim());
+  }
+
+  function loadTemplate() {
+    const sel = document.getElementById("templateSelect");
+    const name = sel.value;
+    if (!name) return;
+    const templates = getTemplates();
+    if (templates[name]) {
+      document.getElementById("latexResume").value = templates[name];
+      document.getElementById("resumeCount").textContent = templates[name].length.toLocaleString() + " chars";
+      showToast("Loaded: " + name);
+    }
+    sel.value = "";
+  }
+
+  function deleteTemplate() {
+    const templates = getTemplates();
+    const names = Object.keys(templates);
+    if (names.length === 0) { showToast("No templates saved"); return; }
+    const name = prompt("Delete which template?\nSaved: " + names.join(", "));
+    if (!name || !templates[name]) return;
+    delete templates[name];
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
+    refreshTemplateList();
+    showToast("Deleted: " + name);
+  }
+
+  refreshTemplateList();
 
   function renderOutput(text) {
     const body = document.getElementById("outputBody");
@@ -629,7 +1023,7 @@
 
     const latex = document.getElementById("latexResume").value.trim();
     const job   = document.getElementById("jobDescription").value.trim();
-    const skills = document.getElementById("skills").value.trim();
+    const skills = getSelectedSkills();
     const model  = document.getElementById("modelSelect").value;
 
     if (!latex || !job) {
@@ -643,6 +1037,7 @@
     showingDiff = false;
     document.getElementById("diffBtn").classList.remove("active");
     abortController = new AbortController();
+    switchTab("resume");
 
     const beginMarker = "\\begin{document}";
     const endMarker = "\\end{document}";
@@ -657,7 +1052,7 @@
 
     const btn = document.getElementById("generateBtn");
     btn.classList.add("loading");
-    btn.querySelector(".btn-label").textContent = "Generating... (click to stop)";
+    btn.querySelector(".btn-label").textContent = "Generating...";
     btn.disabled = false;
 
     const placeholder = document.getElementById("placeholderMsg");
@@ -721,13 +1116,24 @@
 
     generating = false;
     btn.classList.remove("loading");
-    btn.querySelector(".btn-label").textContent = "Generate Tailored Resume";
+    btn.querySelector(".btn-label").textContent = "Generate Resume";
 
     if (fullOutput.trim()) {
       document.getElementById("copyBtn").disabled = false;
       document.getElementById("downloadBtn").disabled = false;
       document.getElementById("clearBtn").disabled = false;
       document.getElementById("diffBtn").disabled = false;
+
+      if (extractedKeywords.length > 0) {
+        const newText = fullOutput.toLowerCase();
+        let matched = 0;
+        extractedKeywords.forEach(kw => {
+          if (newText.includes(kw.keyword.toLowerCase())) matched++;
+        });
+        const newScore = Math.round((matched / extractedKeywords.length) * 100);
+        updateAtsScore(newScore);
+      }
+
       showToast("Resume generated");
     }
   }
@@ -735,9 +1141,12 @@
   function abort() {
     abortController?.abort();
     generating = false;
-    const btn = document.getElementById("generateBtn");
-    btn.classList.remove("loading");
-    btn.querySelector(".btn-label").textContent = "Generate Tailored Resume";
+    const resumeBtn = document.getElementById("generateBtn");
+    resumeBtn.classList.remove("loading");
+    resumeBtn.querySelector(".btn-label").textContent = "Generate Resume";
+    const clBtn = document.getElementById("generateCLBtn");
+    clBtn.classList.remove("loading");
+    clBtn.querySelector(".btn-label").textContent = "Generate Cover Letter";
     showToast("Stopped");
   }
 
@@ -747,41 +1156,38 @@
   }
 
   function copyOutput() {
-    navigator.clipboard.writeText(getFullTex()).then(() => showToast("Copied to clipboard"));
+    const text = activeTab === "resume" ? getFullTex() : coverLetterOutput;
+    navigator.clipboard.writeText(text).then(() => showToast("Copied to clipboard"));
   }
 
   function downloadOutput() {
-    const blob = new Blob([getFullTex()], { type: "text/plain" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "resume_tailored.tex";
-    a.click();
-    showToast("Downloaded resume_tailored.tex");
+    if (activeTab === "resume") {
+      const blob = new Blob([getFullTex()], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "resume_tailored.tex";
+      a.click();
+      showToast("Downloaded resume_tailored.tex");
+    } else {
+      const blob = new Blob([coverLetterOutput], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "cover_letter.txt";
+      a.click();
+      showToast("Downloaded cover_letter.txt");
+    }
   }
 
   function clearOutput() {
-    fullOutput = "";
-    const body = document.getElementById("outputBody");
-    body.innerHTML = `
-      <div class="placeholder-msg" id="placeholderMsg">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <rect x="8" y="6" width="32" height="36" rx="3" stroke="#6b6b78" stroke-width="1.5"/>
-          <line x1="14" y1="14" x2="34" y2="14" stroke="#6b6b78" stroke-width="1.5"/>
-          <line x1="14" y1="20" x2="34" y2="20" stroke="#6b6b78" stroke-width="1.5"/>
-          <line x1="14" y1="26" x2="26" y2="26" stroke="#6b6b78" stroke-width="1.5"/>
-          <circle cx="36" cy="36" r="8" fill="#0d0d0f" stroke="#6b6b78" stroke-width="1.5"/>
-          <line x1="36" y1="32" x2="36" y2="40" stroke="#6b6b78" stroke-width="1.5"/>
-          <line x1="32" y1="36" x2="40" y2="36" stroke="#6b6b78" stroke-width="1.5"/>
-        </svg>
-        <p>Paste your resume and job description, then hit Generate</p>
-      </div>`;
-    document.getElementById("copyBtn").disabled = true;
-    document.getElementById("downloadBtn").disabled = true;
-    document.getElementById("clearBtn").disabled = true;
+    if (activeTab === "resume") {
+      fullOutput = "";
+    } else {
+      coverLetterOutput = "";
+    }
     document.getElementById("diffBtn").disabled = true;
     document.getElementById("diffBtn").classList.remove("active");
     showingDiff = false;
-    document.getElementById("tokenCounter").textContent = "\u2014";
+    resetOutputPlaceholder();
   }
 
   function computeDiff(oldText, newText) {
@@ -849,6 +1255,156 @@
     } else {
       btn.classList.remove("active");
       renderOutput(getFullTex());
+    }
+  }
+
+  // ── TAB SWITCHING ─────────────────────────────────────────
+  function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById("tabResume").classList.toggle("active", tab === "resume");
+    document.getElementById("tabCoverLetter").classList.toggle("active", tab === "coverLetter");
+
+    const diffBtn = document.getElementById("diffBtn");
+
+    if (tab === "resume") {
+      diffBtn.style.display = "";
+      if (fullOutput.trim()) {
+        document.getElementById("copyBtn").disabled = false;
+        document.getElementById("downloadBtn").disabled = false;
+        document.getElementById("clearBtn").disabled = false;
+        diffBtn.disabled = false;
+        if (showingDiff) renderDiff();
+        else renderOutput(getFullTex());
+      } else {
+        resetOutputPlaceholder();
+      }
+    } else {
+      diffBtn.style.display = "none";
+      showingDiff = false;
+      diffBtn.classList.remove("active");
+      if (coverLetterOutput.trim()) {
+        document.getElementById("copyBtn").disabled = false;
+        document.getElementById("downloadBtn").disabled = false;
+        document.getElementById("clearBtn").disabled = false;
+        renderCoverLetter(coverLetterOutput);
+      } else {
+        resetOutputPlaceholder();
+      }
+    }
+  }
+
+  function renderCoverLetter(text) {
+    const body = document.getElementById("outputBody");
+    body.innerHTML = escHtml(text);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function resetOutputPlaceholder() {
+    const body = document.getElementById("outputBody");
+    body.innerHTML = `
+      <div class="placeholder-msg" id="placeholderMsg">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect x="8" y="6" width="32" height="36" rx="3" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="14" y1="14" x2="34" y2="14" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="14" y1="20" x2="34" y2="20" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="14" y1="26" x2="26" y2="26" stroke="#6b6b78" stroke-width="1.5"/>
+          <circle cx="36" cy="36" r="8" fill="#0d0d0f" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="36" y1="32" x2="36" y2="40" stroke="#6b6b78" stroke-width="1.5"/>
+          <line x1="32" y1="36" x2="40" y2="36" stroke="#6b6b78" stroke-width="1.5"/>
+        </svg>
+        <p>Paste your resume and job description, then hit Generate</p>
+      </div>`;
+    document.getElementById("copyBtn").disabled = true;
+    document.getElementById("downloadBtn").disabled = true;
+    document.getElementById("clearBtn").disabled = true;
+    document.getElementById("tokenCounter").textContent = "\u2014";
+  }
+
+  // ── COVER LETTER GENERATION ──────────────────────────────
+  async function generateCoverLetter() {
+    if (generating) { abort(); return; }
+
+    const latex = document.getElementById("latexResume").value.trim();
+    const job   = document.getElementById("jobDescription").value.trim();
+    const model = document.getElementById("modelSelect").value;
+
+    if (!latex || !job) {
+      showToast("Paste your resume and job description first");
+      return;
+    }
+
+    generating = true;
+    coverLetterOutput = "";
+    abortController = new AbortController();
+    switchTab("coverLetter");
+
+    const btn = document.getElementById("generateCLBtn");
+    btn.classList.add("loading");
+    btn.querySelector(".btn-label").textContent = "Generating...";
+    btn.disabled = false;
+
+    const placeholder = document.getElementById("placeholderMsg");
+    if (placeholder) placeholder.remove();
+    document.getElementById("outputBody").textContent = "";
+    document.getElementById("copyBtn").disabled = true;
+    document.getElementById("downloadBtn").disabled = true;
+    document.getElementById("clearBtn").disabled = true;
+    document.getElementById("tokenCounter").textContent = "streaming...";
+
+    let charCount = 0;
+
+    try {
+      const res = await fetch("/generate-cover-letter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resume_text: latex, job_description: job, model }),
+        signal: abortController.signal,
+      });
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop();
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const payload = JSON.parse(line.slice(6));
+
+          if (payload.error) {
+            showError(payload.error);
+            break;
+          }
+
+          if (payload.token) {
+            coverLetterOutput += payload.token;
+            charCount += payload.token.length;
+            renderCoverLetter(coverLetterOutput);
+            document.getElementById("tokenCounter").textContent = charCount.toLocaleString() + " chars";
+          }
+
+          if (payload.done) break;
+        }
+      }
+    } catch (e) {
+      if (e.name !== "AbortError") showError(e.message);
+    }
+
+    generating = false;
+    btn.classList.remove("loading");
+    btn.querySelector(".btn-label").textContent = "Generate Cover Letter";
+
+    if (coverLetterOutput.trim()) {
+      document.getElementById("copyBtn").disabled = false;
+      document.getElementById("downloadBtn").disabled = false;
+      document.getElementById("clearBtn").disabled = false;
+      showToast("Cover letter generated");
     }
   }
 

@@ -89,6 +89,166 @@ def get_models():
         return {"models": [], "status": "error", "error": str(e)}, 500
 
 
+@app.route("/extract-keywords", methods=["POST"])
+def extract_keywords():
+    data = request.get_json()
+    job_description = data.get("job_description", "").strip()
+    resume_text = data.get("resume_text", "").strip()
+    model = data.get("model", DEFAULT_MODEL).strip()
+
+    if not job_description:
+        return {"error": "Job description is required."}, 400
+
+    prompt = f"""Extract the key technical skills, tools, frameworks, programming languages, platforms, methodologies, and qualifications from this job description that an ATS (Applicant Tracking System) would scan for.
+
+RULES:
+- Return ONLY a valid JSON array of strings. No explanations, no markdown.
+- Include specific tools/technologies (e.g. "Kubernetes", "React", "PostgreSQL"), not generic phrases.
+- Include methodologies and practices (e.g. "Agile", "CI/CD", "TDD").
+- Include soft skills only if explicitly required (e.g. "leadership", "mentoring").
+- Keep each item short — 1 to 3 words max.
+- Aim for 15–30 keywords. Cover all important ones.
+
+Example output: ["Python", "React", "AWS", "CI/CD", "Docker", "Agile", "REST API", "PostgreSQL"]
+
+Job Description:
+{job_description}
+
+JSON array:"""
+
+    try:
+        r = requests.post(
+            OLLAMA_URL,
+            json={"model": model, "prompt": prompt, "stream": False},
+            timeout=120,
+        )
+        if r.status_code != 200:
+            return {"error": f"Ollama returned {r.status_code}"}, 500
+
+        raw = r.json().get("response", "").strip()
+
+        start = raw.find("[")
+        end = raw.rfind("]")
+        if start == -1 or end == -1:
+            return {"error": "Model did not return valid JSON array.", "raw": raw}, 500
+
+        keywords = json.loads(raw[start:end + 1])
+        keywords = [k.strip() for k in keywords if isinstance(k, str) and k.strip()]
+
+        resume_lower = resume_text.lower()
+        results = []
+        for kw in keywords:
+            present = kw.lower() in resume_lower
+            results.append({"keyword": kw, "present": present})
+
+        present_count = sum(1 for r in results if r["present"])
+        total = len(results)
+        score = round((present_count / total) * 100) if total > 0 else 0
+
+        return {
+            "keywords": results,
+            "match_score": score,
+            "present_count": present_count,
+            "total": total,
+        }
+    except requests.exceptions.ConnectionError:
+        return {"error": "Cannot connect to Ollama."}, 500
+    except json.JSONDecodeError:
+        return {"error": "Failed to parse keywords from model response.", "raw": raw}, 500
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+
+def build_cover_letter_prompt(resume_text: str, job_description: str) -> str:
+    return f"""You are a professional cover letter writer. Write a one-page cover letter for a job application.
+
+FORMAT — follow this structure exactly:
+Line 1: Current month and year (e.g. "March 2026")
+Line 2: Company/organization name (extract from job description)
+Line 3: City, Province/State
+Line 4: blank
+Line 5: "Re: Cover Letter – [exact job title from the posting]"
+Line 6: blank
+Line 7: "Dear Hiring Manager,"
+Line 8: blank
+Lines 9-end: Three paragraphs, then sign-off.
+
+PARAGRAPH STRUCTURE:
+- Paragraph 1 (3-4 sentences): Who the candidate is (year, program, university), why they are excited about THIS specific role. Reference something specific about the company or role that connects to their interests. Do not be generic.
+- Paragraph 2 (4-5 sentences): Map the candidate's most relevant experience to the job requirements. Reference specific projects, roles, tools, and outcomes from the resume. Use the same language the job posting uses. Be concrete — mention metrics, tools, and results.
+- Paragraph 3 (3-4 sentences): Why the candidate would be a good fit, tying together skills and the role. Include a call to action. Mention the candidate's website if they have one. Thank the reader.
+
+After paragraph 3:
+- blank line
+- "Sincerely"
+- Candidate's full name
+- Contact line: "email | phone | website" (extract from resume)
+
+WRITING RULES:
+- Sound like a real person, not a template. No corporate fluff.
+- Keep the tone professional but approachable — confident without being arrogant.
+- Total length: 250-400 words (one page when printed).
+- Do NOT fabricate experience. Only reference what exists in the resume.
+- Do NOT use phrases like "I am writing to express my interest" or "I believe I would be a great asset."
+- Vary sentence length. Mix short punchy sentences with longer ones.
+- Output ONLY the cover letter text. No markdown, no code fences, no commentary.
+
+--- CANDIDATE'S RESUME ---
+{resume_text}
+
+--- JOB DESCRIPTION ---
+{job_description}
+
+Write the cover letter now:"""
+
+
+@app.route("/generate-cover-letter", methods=["POST"])
+def generate_cover_letter():
+    data = request.get_json()
+    resume_text = data.get("resume_text", "").strip()
+    job_description = data.get("job_description", "").strip()
+    model = data.get("model", DEFAULT_MODEL).strip()
+
+    if not resume_text or not job_description:
+        return {"error": "Resume and job description are required."}, 400
+
+    prompt = build_cover_letter_prompt(resume_text, job_description)
+
+    def stream_response():
+        try:
+            with requests.post(
+                OLLAMA_URL,
+                json={"model": model, "prompt": prompt, "stream": True},
+                stream=True,
+                timeout=300,
+            ) as r:
+                if r.status_code != 200:
+                    yield f"data: {json.dumps({'error': f'Ollama returned {r.status_code}'})}\n\n"
+                    return
+
+                for line in r.iter_lines():
+                    if line:
+                        chunk = json.loads(line)
+                        token = chunk.get("response", "")
+                        done = chunk.get("done", False)
+                        yield f"data: {json.dumps({'token': token, 'done': done})}\n\n"
+                        if done:
+                            break
+        except requests.exceptions.ConnectionError:
+            yield f"data: {json.dumps({'error': 'Cannot connect to Ollama. Make sure it is running on port 11434.'})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+    return Response(
+        stream_with_context(stream_response()),
+        mimetype="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
 @app.route("/generate", methods=["POST"])
 def generate():
     data = request.get_json()
